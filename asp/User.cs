@@ -28,8 +28,8 @@ namespace asp
         public Task GetAll(HttpResponse response);
 
         public Task Delete(Guid? id, HttpResponse response);
-        public Task Update(HttpRequest request, HttpResponse response);
-        public Task Insert(HttpRequest request, HttpResponse response);
+        public Task Update(User user, HttpResponse response);
+        public Task Insert(User user, HttpResponse response);
     }
 
     public class DbContext : IDbModel<User>
@@ -80,26 +80,23 @@ namespace asp
             await response.WriteAsJsonAsync(models);
         }
 
-        public async Task Insert(HttpRequest request, HttpResponse response)
+        public async Task Insert(User user, HttpResponse response)
         {
             try
             {
-                var storage = await request.ReadFromJsonAsync<User>();
-                if (storage!=null)
-                {
-                    User user = new()
-                    {
-                        Id = storage.Id,
-                        Name = storage.Name,
-                        Password = storage.Password
-                    };
+                //var storage = await request.ReadFromJsonAsync<User>();
+                //if (storage!=null)
+                //{
+                //    User user = new()
+                //    {
+                //        Id = storage.Id,
+                //        Name = storage.Name,
+                //        Password = storage.Password
+                //    };
                     models.Add(user);
                     await response.WriteAsJsonAsync(user);
-                }
-                else
-                {
-                    throw new Exception("Incorrect data");
-                }
+                
+              
             }
             catch(Exception ex) { }
             {
@@ -108,9 +105,9 @@ namespace asp
             }
         }
 
-        public async Task Update(HttpRequest request, HttpResponse response)
+        public async Task Update(User user, HttpResponse response)
         {
-           var user= await request.ReadFromJsonAsync<User>();
+           //var user= await request.ReadFromJsonAsync<User>();
             if (user!=null)
             {
                User? u= models.FirstOrDefault(x => x.Id == user.Id);
@@ -126,6 +123,7 @@ namespace asp
                 //        item.Name = user.Name;
                 //    }
                 //}
+                await response.WriteAsJsonAsync(u);
             }
             else
             {
